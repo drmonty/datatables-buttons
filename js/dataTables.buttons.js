@@ -1,4 +1,4 @@
-/*! Buttons for DataTables 1.0.1
+/*! Buttons for DataTables 1.0.2
  * ©2015 SpryMedia Ltd - datatables.net/license
  */
 (function(window, document, undefined) {
@@ -163,7 +163,7 @@ $.extend( Buttons.prototype, {
 		for ( i=0, ien=buttons.length ; i<ien ; i++ ) {
 			this.removePrep( i );
 
-			for ( j=0, jen=subButtons[i].length; j<0 ; j++ ) {
+			for ( j=0, jen=subButtons[i].length ; j<jen ; j++ ) {
 				this.removePrep( i+'-'+j );
 			}
 		}
@@ -1052,7 +1052,7 @@ Buttons.defaults = {
  * @type {string}
  * @static
  */
-Buttons.version = '1.0.1';
+Buttons.version = '1.0.2';
 
 
 $.extend( _dtButtons, {
@@ -1389,7 +1389,7 @@ var _exportData = function ( dt, inOpts )
 			str = str.replace( /^\s+|\s+$/g, '' );
 		}
 
-		if ( config.trim ) {
+		if ( config.stripNewlines ) {
 			str = str.replace( /\n/g, ' ' );
 		}
 
@@ -1409,11 +1409,25 @@ var _exportData = function ( dt, inOpts )
 		} ).toArray() :
 		null;
 
-	var body = dt.rows( config.rows, config.modifier ).indexes().map( function (rowIdx, i) {
-		return dt.cells( rowIdx, config.columns ).indexes().map( function (cellIdx) {
-			return strip( dt.cell( cellIdx ).render( config.orthogonal ) );
-		} ).toArray();
-	} ).toArray();
+	var cells = dt
+		.cells( config.rows, config.columns, config.modifier )
+		.render( config.orthogonal )
+		.toArray();
+	var columns = header.length;
+	var rows = cells.length / columns;
+	var body = new Array( rows );
+	var cellCounter = 0;
+
+	for ( var i=0, ien=rows ; i<ien ; i++ ) {
+		var row = new Array( columns );
+
+		for ( var j=0 ; j<columns ; j++ ) {
+			row[j] = cells[ cellCounter ];
+			cellCounter++;
+		}
+
+		body[i] = row;
+	}
 
 	return {
 		header: header,
