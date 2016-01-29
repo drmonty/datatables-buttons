@@ -2,7 +2,7 @@
     "name": "drmonty-datatables-buttons",
     "description": "Buttons is an extension for DataTables that adds control buttons to the table.",
     "homepage": "http://datatables.net",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "dependencies": {
         "jquery": ">=1.7"
     },
